@@ -1,0 +1,40 @@
+
+//每一个 Android 项目 都必须添加此插件  此Android插件提供了构建额测试应用所需要的一切  此插件
+//用于扩展Gradle构建脚本的能力   当我们的这个modle为  libiry依赖时 我们需要更改声明 声明为
+//apply plugin: 'com.android.library' 来声明 此为一个依赖仓库      一个modle不能既是 library 又是
+//application  这两者只能有一个
+apply plugin: 'com.android.application'
+
+/**
+ *  Android 模块即为 此插件对gradle的扩展支持  可以用来配置项目的特殊约定参数
+ */
+android {
+    /**
+     * 编译版本的sdk 一般使用最新的Android api版本作为编译版本
+     */
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "com.example.administrator.testgradle"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+}

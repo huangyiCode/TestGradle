@@ -1,0 +1,136 @@
+
+Eclipse项目迁移到 AndroidStudio
+ 方式:
+     1.使用AndroidStudio导入向导，自动进行迁移处理
+     2.在Eclipse项目中添加Gradle脚本,并手动设置一切
+
+ 导入向导方式:
+     AndroidStudio可以自动的导入Eclipse项目:
+         File------->close project 回到Studio桌面------> import project即可  导入工具会帮你自动重构项目
+         在根目录会自动生成一个import-summary.txt文件  里面展示了项目重构所发生的一些事 比如:文件夾的位置改变 比如:将之前的
+         依赖jar包更换成了gradle依赖方式
+
+         注意:在项目构建过程中可能需要网络去下载一些必要的依赖
+
+  手动导入方式:
+      手动导入的方式有许多种 ，不需要更改为新的目录结构，甚至可以在gradle脚本上运行ant脚本
+
+      1.保留旧的项目结构
+          可以保留旧的项目结构不变，但是需要更改一下源集的配置(比如Studio工程的代码源集在app/main/java下 但是Eclipse在 src中
+        所以需要更改源集的配置)
+
+         第一步:在项目的根目录下新建builder.gradle文件  在其中申请Android插件，并设置Gradle和Android插件的属性:
+            buildscript{
+                repositories{
+                      jcenter()
+                }
+                 dependencies{
+
+                    classpath 'com.android.tools.build:gradle:2.2.2'
+
+                  }
+            }
+
+            apply plugin: 'com.android.application'
+
+            android {
+                /**
+                 * 编译版本的sdk 一般使用最新的Android api版本作为编译版本
+                 */
+                compileSdkVersion 24
+                buildToolsVersion "25.0.0"
+             }
+
+          第二步:修改源集按照Eclipse的项目结构来复写main源集的示例如下:
+
+          需要告诉gradle 所有的组建都应该放在src文件夹下  也可以将他们都放进去
+             android{
+               sourceSets{
+                  main{
+                   manifest.srcFile 'AndroidManifest.xml'
+                   java.srcDirs=['src']
+                   resources.srcDirs=['src']
+                   aidl.srcDirs=['src']
+                   renderscript.srcDirs=['src']
+                   res.srcDirs=['res']
+                   assets.srcDirs=['assets']
+                   }
+                   androidTest.setRoot('tests')
+                  }
+
+               }
+
+          如果你的项目中存在jar文件依赖，则需要告诉gradle的文件依赖路径,假设jar文件在libs中，那么需要添加一下配置
+
+          将libs文件夹下的 所有 以,jar结尾的文件视为一个依赖
+          dependencies{
+             compile fileTree(dir:'libs',include:['*.jar'])
+
+          }
+
+          这样 项目旧可以进行运行   并且可以将libs中的jar包进行替换 替换成maven依赖
+
+      2.转换到新的项目结构
+
+          如果需要导入AndroidSudio 并且转换下古墓结构，那你就必须新建一些文件夹并且移动一些文件 下面有一个对照表
+       可以看到文件"何去何从"
+
+            旧的位置                                 新的位置
+             src/                                 app/src/main/java/
+             res/                                 app/src/main/res/
+             assets/                              app/src/main/assets
+             AndroidManifest.xml                  app/src/mai/AndroidManifest.xml
+
+         如果你存在测试单元模块 还需要将测试的源代码移动到 app/src/test/java/下，以遍让gradle对其进行识别，功能测试则需要放到
+      app/src/androidTest/java/下
+
+         接下来需要在工程的根目录下面创建 settings.gradle，给文件用来告诉Gradle将app模块包含到构建中去
+           include ':app'
+
+          需要创建两个build.gradle文件 第一个用于项目根目录 与 settings.gradle平齐 用来定义项目级的参数设置:
+
+             buildscript{
+
+                   repositories{
+
+                       jcenter()
+
+                   }
+                    dependencies{
+
+                       classpath 'com.android.tools.build:gradle:2.2.2'
+
+                    }
+
+             }
+
+             第二个build.gradle文件存在于 app目录下，包含了特定模块的参数设置
+
+              apply plugin: 'com.android.application'
+
+                 android {
+                      /**
+                      * 编译版本的sdk 一般使用最新的Android api版本作为编译版本
+                      */
+                      compileSdkVersion 24
+                      buildToolsVersion "25.0.0"
+                 }
+
+               如果 app模块存在依赖 则需要进行依赖添加
+                   dependencies{
+
+                      compile fileTree(dir:'libs',include:['*.jar'])
+                      compile 'XXXXXXX'
+
+                    }
+
+
+
+         原Eclipse自动生成的 gen bin目录可以进行删除
+
+
+
+
+
+
+

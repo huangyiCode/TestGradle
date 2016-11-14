@@ -1,0 +1,35 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+
+//构建脚本  相当于java中的方法
+buildscript {
+
+    /**
+     * repositories(仓库)  依赖库位置 jcenter仓库    当你添加外部依赖的时候  会在此仓库中进行寻找
+     *   jcenter仓库---->是一个预配置的Maven仓库,里面存放了许多第三方依赖库   相当于一个代码仓库
+     *      在使用第三方依赖 比如.jar时我们只需要指定使用仓库中的相应依赖文件的链接即可,而不用
+     *      将jar包放入项目中
+     */
+    repositories {
+        jcenter()
+    }
+    /**
+     * dependencies(依赖)  
+     */
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,10 @@
+
+     Gradle Wrapper (Gradle 的包装)     Gradle是一个不断发展的工具，新版本可能打破向后的
+ 兼容性，使用gradleWraple可以避免这个问题，并确保构建是可以重复的.
+    强烈要求将gradle文件夹添加到版本控制中，当运行时会自动狭隘相应的gradle版本
+
+    gradle-wrapper.properties  文件包含了参数配置，distributionUrl 表示的是使用的是哪一个版本的
+ gradle，当项目中使用的不是最新的gradle版本时 AndroidStudio会提示建议自动更新，其原理是AndroidStudio
+ 修改了此文件中的路径 并开始出发了一次构建，这样最新的gradle版本将会被下载.
+    AndroidStudio使用会使用默认的 AndroidStudio路径下的gradle 若要更改为使用 wrapper中的版本，有时需要
+ 进行修改  settings----->Build----->Gradle----->Use default gradle wrapper 来指定使用gradle wrapper
