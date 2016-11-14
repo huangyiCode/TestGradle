@@ -1,0 +1,64 @@
+自定义构建
+
+     当你在AndroidStudio中修改了x.gradle文件时,无论作出任何修改 都必须对项目进行同步，特别是添加了
+ 依赖(添加了依赖之后需要对项目进行同步，才可以进行使用)或者使用了BuildConfig常量时(比如在封装Log日
+ 志的时候，一般情况下我们会使用到BuildConfig.DEBUG)
+     可以点击tryAgin 或者 Sync Now 或者工具栏上的同步或者 Tools-->Android-->Sync Project with Grade Files
+
+      其实Studio同步是运行了 generateDebugSource任务来生成所有必须的类
+
+操控manifest条目
+     我们直接可以在模块的manifest中对应用的参数进行配置 applicationId minSdkVersion targetSdkVersion
+  versionCode versionName 另外下面的属性也是可以进行操控的
+      testApplicationID: 针对instrument 测试APK的applicationId
+      testInstrumentationRunner：JUnit测试运行器的名称,被用来进行测试
+      signingConfig
+      proguardFile
+
+      可以在File---->Project Structure中进行设置 Build Types进行设置，这里面的设置最终都会生成到.gradle文件中
+
+BuildConfigs和资源
+      从SDK版本17之后 构建工具会生成一个BuildConfig类(app/build/generated/source/buildConfig) 里面包含了一个
+   按照构建类型设置值的DEBUG常量比如在 封装Log的时候可以对其进行使用,我们可以它能够给gradle文件对其产生的常量
+   进行扩展，这样在不同的buildType时 就可以拥有不同的常量 比如:测试服务器的URL和正式的URL
+       buildTypes {
+           release {
+               minifyEnabled false
+               proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+               //注意：字符串必须用转义双引号("\xx")括起来 才会生成字符串
+               buildConfigField "String","API_URL","\"http://192.16.199:8080/test\""
+               buildConfigField "boolean","LOG","false"
+           }
+
+           debug{
+               buildConfigField "String","API_URL","\"http://192.16.199:8080/debug\""
+               buildConfigField "boolean","LOG","true"
+           }
+       }
+
+    并且可以使用类似的方式来配置资源值
+       resValue "tring","name","release"  这种方式会在app/build/res/resValues下面生成一个xml中
+                可以直接在代码中进行使用 android:text="@string/name"
+    也可以使用类似的方式去更改 AndroidManifest中的数据
+          1.在manifest中设置一个变量
+
+              <meta-data
+                android:name="UMENG_APPKEY"
+                android:value="${umeng_app_key}"/>
+
+          2.在build.gradle中对其进行赋值
+
+                debug {
+                    manifestPlaceholders = [umeng_app_key: "你替代的内容"]
+                 }
+                release {
+                     manifestPlaceholders = [umeng_app_key: "你替代的内容"]
+                  }
+
+
+
+
+
+
+
+

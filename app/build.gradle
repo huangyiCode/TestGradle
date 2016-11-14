@@ -55,6 +55,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String","API_URL","\"http://192.16.199:8080/test\""
+            buildConfigField "boolean","LOG","false"
+            resValue "string","app_namea","release"
+        }
+
+        debug{
+            buildConfigField "String","API_URL","\"http://192.16.199:8080/debug\""
+            buildConfigField "boolean","LOG","true"
+            resValue "string","app_namea","debug"
         }
     }
 }
@@ -63,7 +72,6 @@ android {
  * dependencies是标准grade配置的一部分(所以在android代码块之外)定义了一个应用或依赖项目的所有依赖包
  */
 dependencies {
-    classpath 'com.android.tools.build:gradle:2.2.2'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
