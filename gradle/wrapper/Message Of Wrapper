@@ -8,3 +8,5 @@
  修改了此文件中的路径 并开始出发了一次构建，这样最新的gradle版本将会被下载.
     AndroidStudio使用会使用默认的 AndroidStudio路径下的gradle 若要更改为使用 wrapper中的版本，有时需要
  进行修改  settings----->Build----->Gradle----->Use default gradle wrapper 来指定使用gradle wrapper
+
+     使用gradle Wrapper 可以不用预先下载gradle  便于项目使用统一的版本  使维护和分享项目更为方便

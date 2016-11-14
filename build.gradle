@@ -17,13 +17,18 @@ buildscript {
      * dependencies(依赖)  
      */
     dependencies {
+        /**
+         * gradle的安卓插件  每个Android模块都需要Android插件,因为该插件可使其执行Andrid相关的任务
+         */
         classpath 'com.android.tools.build:gradle:2.2.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
-
+/**
+ * allprojects(所有的项目) 用来声明那些需要被用于所有模块的属性 可以在其中创建任务，这些任务会被运行到所有模块
+ */
 allprojects {
     repositories {
         jcenter()

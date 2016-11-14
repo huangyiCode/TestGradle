@@ -1,12 +1,18 @@
-
-//每一个 Android 项目 都必须添加此插件  此Android插件提供了构建额测试应用所需要的一切  此插件
+/**
+ * 模块的build.gradle可以覆盖顶层 build.gradle文件的任何属性
+ */
+//每一个 Android 项目 都必须添加此插件  此Android插件提供了构建额测试应用,打包Android应用,依赖项目所需要的一切  此插件
 //用于扩展Gradle构建脚本的能力   当我们的这个modle为  libiry依赖时 我们需要更改声明 声明为
-//apply plugin: 'com.android.library' 来声明 此为一个依赖仓库      一个modle不能既是 library 又是
+//apply plugin: 'com.android.library'   来声明 此为一个依赖仓库      一个modle不能既是 library 又是
 //application  这两者只能有一个
+//该插件 在顶层的build.gradle文件中被天价成了依赖
 apply plugin: 'com.android.application'
 
 /**
  *  Android 模块即为 此插件对gradle的扩展支持  可以用来配置项目的特殊约定参数
+ *    之所以可以使用android模块 是因为我们使用了Android插件
+ *    必须属性:  compileSdkVersion   buildToolsVersion
+ *
  */
 android {
     /**
@@ -14,14 +20,37 @@ android {
      */
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
+    /**
+     * 在此配置应用的核心属性  此代码块中的属性 可以覆盖AndroidManifest.xml中对应的属性
+     */
     defaultConfig {
+        /**
+         *    覆盖了AndroidManifest.xml的packageName  其实 applicationId与packageName还是有所不同
+         *  在Gradle被作为Android构建之前，AndroidManifest中的包名有两个用途(1.作为应用的唯一标识 2.在R资源类中被用做包名)
+         *  使用构建variants(变种),Gradle可更容易的创建不同版本的应用，例如:根据variants可以容易的构建一个免费版和付费版
+         *  应用，并且这两个版本需要有独立的标识符，才可以以不同的应用身份出现，才可以同时被安装，但是生成的R文件和iyuan代码
+         *  都必须要相同，否则你的所有源文件都要随着版本的不同而进行更改，所以 定义在AndroidManifest中的package用在代码和R类
+         *  中，之前被用作设备和Google Play唯一标识的packageName 现在则被称之为application id 当我们尝试使用不同的构建类型
+         *  时 application将变得有趣      多渠道打包相关
+         */
         applicationId "com.example.administrator.testgradle"
+        /**
+         *    之前 minSdkVersion targetSdkVersion是作为<uses-sdk>的一部分 被添加在manifest中的，minSdkVersion用于配置运行应用
+         * 最小支持的API LEVEL ,targetSdkVersion用于告诉系统，该应用已经在某特定Android版本通过测试
+         */
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        /**
+         * 测试相关
+         */
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    /**
+     * buildTypes(构建类型) 用于配置如何构建和 打包不同类型的应用
+     */
     buildTypes {
         release {
             minifyEnabled false
@@ -30,7 +59,11 @@ android {
     }
 }
 
+/**
+ * dependencies是标准grade配置的一部分(所以在android代码块之外)定义了一个应用或依赖项目的所有依赖包
+ */
 dependencies {
+    classpath 'com.android.tools.build:gradle:2.2.2'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
