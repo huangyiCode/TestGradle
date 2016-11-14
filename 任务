@@ -1,0 +1,29 @@
+Gradle的Task(任务)相关
+   打印所有的可用任务:
+        在 Terminal(AndroidStudio自带) 终端中 运行  gradlew tasks命令
+   试运行任务:
+        gradlew tasks --all 会试运行任务按照步骤
+
+    基础任务:
+         这些任务即不被实现也不做任何操作，用来定义插件之间的哟定
+        assemble：集合项目的输出
+        clean:清理项目的输出
+        check:运行所有检查，通常是单元测试和集成测试
+        build:同时运行assemble和check
+
+    Android任务:
+        Android插件扩展了基本任务并且实现了他们的行为
+
+          assemble:为每个构建版本创建一个APK  assemble默认依赖于assembleDebug和assembleRelease 如果你添加了更多的构建类型，就会有更多的
+                   任务，意味着assemble会触发每一个你所拥有的构建类型，并进行一次构建操作
+          clean:删除所有的构建内容，例如APK文件
+          check:运行Lint检查(对Android工程源代码进行扫描和检查 发现潜在问题http://hubingforever.blog.163.com/blog/static/17104057920129249497980/)
+                比如:检查 布局中的onClick的指向是否在代码中实现
+          build:同时运行assemble和check
+             处理扩展这些任务之外，Android插件还添加了一些新的任务，一些需要注意的:
+                 connectedCheck：在连接设备和模拟器上进行运行测试
+                 deviceCheck：一个占位任务，专为其他插件在远端设备上运行测试
+                 InstallDeug和InstallDebug：在设备或者模拟器上安装特定版本
+                 所有安装的任务都有相关的uninstall任务
+
+   AndroidStudio有专门的任务工具窗口------>Gradle,在其中直接双击任务的名称进行运行 并且可以对任务的运行进行跟踪
