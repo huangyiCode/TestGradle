@@ -1,5 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+/**
+ * 声明所有的model都可以使用config.gradle中的内容
+ */
+apply from :"config.gradle"
+apply from :"configTwo.gradle"
+defaultTasks 'clean','assembleDebug'
 
 //构建脚本  相当于java中的方法
 buildscript {
@@ -33,7 +39,19 @@ allprojects {
     repositories {
         jcenter()
     }
+
 }
+
+/**
+ * 顶层构建文件可以定义属性 提供模块构建文件使用
+ */
+ext{
+    compileSdkVersion=24
+    buildToolsVersion="25.0.0"
+    name="I TOP"
+    appName="我是顶层构建文件"
+}
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

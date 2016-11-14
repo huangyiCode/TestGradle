@@ -55,10 +55,57 @@ BuildConfigs和资源
                      manifestPlaceholders = [umeng_app_key: "你替代的内容"]
                   }
 
+项目范围的设置
+-------------------------------------问题start--------------------------------
+    问题？？？如果在一个项目中，你拥有多个Android模块，我们已经知道在顶层的构建文件中 allprojects代码块可以定义
+依赖仓库，这样所有的Model模块都使用此依赖，我们可以使用相同的策略来使用Android特定的设置
+           allprojects{
+              apply plugin: 'com.android.application'
+              android{
+                  compileSdkVersion 24
+                  buildToolsVersion "25.0.0"
+              }
+           }
+       注意:这种方式只有在所有的模块都是app模块的时候才可以使用
+-------------------------------------问题end--------------------------------
+    gradle允许在Project对象上添加额外的属性，任何build.gradle都可以添加额外的属性，添加额外的属性需要
+    用到ext代码块
+
+    在顶层构建文件中 添加爱一个含有自定义属性的etc代码块
+          ext{
+                compileSdkVersion=24
+                buildToolsVersion="25.0.0"
+             }
+     在模块层的构建文件中对其进行引用 通过rootProject对其进行引用
+               compileSdkVersion rootProject.ext.compileSdkVersion
+               buildToolsVersion rootProject.ext.buildToolsVersion
+使用外部 xxx.gradle文件
+   1.可以新建一个 config.gradle 在其中进行配置
+
+       ext{
+          packageV7='com.android.support:appcompat-v7:24.2.1'
+          pcakageTestCompile='junit:junit:4.12'
+       }
+
+   2.在顶层构建文件中进行声明 所有的model都可以读取config.gradle中的内容 可以声明多个
+     如果顶层文件中存在 和config.gradle中的属性相同 则会将其覆盖
+
+         apply from :"config.gradle"
+
+    3.在model的构建文件中就可以对其进行使用  同样通过rootProject
+
+          rootProject.ext.packageV7
 
 
 
+-------------------------------------问题start--------------------------------
+    ？？？注意:我们可以同时在顶层构建文件以及模块构建文件中定义属性，如果一个模块定义了一个在顶层构建文件中
+         早已存在的属性时，那么新属性将会覆盖早已存在的属性
+-------------------------------------问题end--------------------------------
 
+    当没有指定任何任务而运行Gradle时(在终端(Terminal) 执行gradlew命令) 会执行help任务 会打印如何使用gradle的信息，help任务被设置为默认任务，可以覆写
+默认任务，添加一个常用任务，甚至是多个任务
+    在顶层构建文件中加入一行
+      defaultTasks 'clean','assembleDebug
 
-
-
+      设置默认任务为 clean和 assembleDebug

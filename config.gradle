@@ -1,0 +1,5 @@
+
+ext{
+   packageV7='com.android.support:appcompat-v7:24.2.1'
+   pcakageTestCompile='junit:junit:4.12'
+}

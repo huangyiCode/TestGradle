@@ -18,8 +18,8 @@ android {
     /**
      * 编译版本的sdk 一般使用最新的Android api版本作为编译版本
      */
-    compileSdkVersion 24
-    buildToolsVersion "25.0.0"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     /**
      * 在此配置应用的核心属性  此代码块中的属性 可以覆盖AndroidManifest.xml中对应的属性
      */
@@ -63,10 +63,11 @@ android {
         debug{
             buildConfigField "String","API_URL","\"http://192.16.199:8080/debug\""
             buildConfigField "boolean","LOG","true"
-            resValue "string","app_namea","debug"
+            resValue "string","app_namea",rootProject.ext.appName
         }
     }
 }
+
 
 /**
  * dependencies是标准grade配置的一部分(所以在android代码块之外)定义了一个应用或依赖项目的所有依赖包
@@ -76,6 +77,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    testCompile 'junit:junit:4.12'
+
+    //引用 config.gradle中ext代码块中的属性 需要在顶层构建文件中声明所有的model都可以使用 config,gradle中的属性
+    compile rootProject.ext.packageV7
+    testCompile rootProject.pcakageTestCompile
 }
