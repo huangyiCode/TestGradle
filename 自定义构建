@@ -1,3 +1,5 @@
+create by huangYi  2016/11/14
+
 自定义构建
 
      当你在AndroidStudio中修改了x.gradle文件时,无论作出任何修改 都必须对项目进行同步，特别是添加了
