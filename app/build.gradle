@@ -66,19 +66,30 @@ android {
             resValue "string","app_namea",rootProject.ext.appName
         }
     }
+    repositories{
+        flatDir{
+            dirs 'libs'
+        }
+    }
 }
+
+
 
 
 /**
  * dependencies是标准grade配置的一部分(所以在android代码块之外)定义了一个应用或依赖项目的所有依赖包
  */
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    //引用 config.gradle中ext代码块中的属性 需要在顶层构建文件中声明所有的model都可以使用 config,gradle中的属性
+    //引用 config.gradle中ext代码块中的属性 需要在顶层构建文件中声明所有的model都可以使用 config,gradle
+    // 中的属性
     compile rootProject.ext.packageV7
     testCompile rootProject.pcakageTestCompile
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.alibaba:fastjson:1.2.7'
+    compile(name: 'test1', ext: 'aar')
+
 }

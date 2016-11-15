@@ -5,7 +5,7 @@
  */
 apply from :"config.gradle"
 apply from :"configTwo.gradle"
-defaultTasks 'clean','assembleDebug'
+//defaultTasks 'clean','assembleDebug'
 
 //构建脚本  相当于java中的方法
 buildscript {

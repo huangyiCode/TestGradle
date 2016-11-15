@@ -1,0 +1,169 @@
+create by 黄奕 2016/11/15
+
+     依赖管理是gradle中最耀眼的特点之一，最佳的做法是我们仅仅需要在构建文件中添加一行代码即可完成相应的
+依赖.Gradle会自动从远程仓库下载或者使用本地仓库红的依赖，确保我们能够使用依赖中的类。
+     如果你的项目中存在依赖，并且这个依赖有自己的依赖，Gradle将会自动处理这些问题，这些依赖中的依赖我们
+称为依赖传递.
+
+依赖仓库
+本地依赖
+依赖的概念
+
+依赖仓库
+    一般情况下我们所说的依赖指的是外部依赖，比如其他开发者提供的依赖库，手动管理依赖相对比较麻烦，我们一般
+需要下载相应的jar包，将其拷贝到项目中，引用它.通常这些jar文件是没有版本号的，所以一般的做法是我们需要自己添
+加版本号，方便更新.
+    使用依赖仓库可以解决这些问题，一个依赖仓库实质上是一些文件的集合，Gradle默认没有为IDE项目添加任何依赖仓
+库，所以需要在respositories代码块中对其进行添加，使用AndroidStudio则hi默认在根构建文件中进行添加，在
+allprogects代码块中声明了所有模块构建文件的依赖仓库为jcenter仓库
+    Gradle支持三种不同的依赖仓库:Maven,lvy和静态文件和文件夹，在构建的执行阶段依赖将会从依赖依赖仓库中取出
+Gradle有本地缓存，所以一个特定版本的依赖只会在机器上下载一次.
+    依赖通常由三种元素定义:group,name和version
+      group----->指定了创建该依赖的组织，一般情况下是反域名 eg：com.squareup.okhttp
+      name------>表示依赖库的唯一标识，依赖的名称 eg:okhttp
+      version--->指定了此依赖的版本号 eg:2.0.0
+      dependencies{
+           compile 'com.squareup.okhttp:okhttp:2.0.0'
+      }
+     注意:对于一个依赖来说 其唯一需要的标识是name, group和version都是可选的，但是一般情况下为了表述清楚
+          建议添加group,version可以用来确定版本号，确保依赖库不会自动更新，从而可能造成问题导致失败
+
+预定义依赖仓库
+     为了方便一般Gradle预定义了三个Maven仓库:JCenter,Maven Central和本地的Maven仓库.我们需要在构建脚本中
+ 对其进行包含，添加以下代码
+    repositories{
+        mavenCenter()
+        jcenter()
+        mavenLocal()
+    }
+
+      JCenter和Maven Central是两个比较有名的远程仓库，一般不同时使用，推荐使用Jcenter它也是AndroidStudio项目
+  的默认依赖仓库，最重要的是Jcenter不同于MavenCenter 它支持HTTPS.
+      本地Maven仓库是你已经使用了所有依赖的本地缓存，你也可以自己添加依赖，windows下本地缓存目录在:
+          C:\Users\Administrator\.gradle\caches\modules-2\files-2.1
+
+       小技巧:如果长时间依赖下载失败 可以拷贝现成的jar文件放在缓存目录中 同样可以被依赖识别
+
+  远程仓库
+       一些组织会创建有趣的插件或依赖库，将他们放在自己Maven或lvy服务器上，为了在构建中添加这些依赖，你需要
+  在maven代码块中添加自己仓库的URL：
+       repositories{
+           maven{
+             url "http://xxxxxxxx/mave2"
+           }
+
+       }
+        注意:可以集成自己的maven仓库
+  一般情况下 我们在自己服务器上的仓库是需要访问资格的，我们需要对仓库添加一个凭证:
+           repositories{
+                      maven{
+                        url "http://xxxxxxxx/mave2"
+                        /**
+                        * 一般情况下 构建文件会进行版本控制上传至服务器，更好的办法是，新建一个
+                        * 单独的gradle属性文件进行配置 eg：本项目中的 config.gradle的引用
+                        */
+                        credentials{
+                            username 'user'
+                        }
+                      }
+                  }
+
+  本地仓库
+
+       我们可以在自己的本地运行Maven和Jcenter仓库，要想在构建中添加本地仓库，你只需要配置一个相对或者
+   绝对路径即可.
+
+          repositories{
+               maven{
+                  url ".../repo"
+               }
+          }
+
+         新的Android项目默认有一个Android Support Library的依赖，在安装SDK时，会在SDK目录中创建两个
+   本地Maven仓库 分别为:
+            D:\StudioSdk\extras\android\m2repository
+            D:\StudioSdk\extras\google\m2repository
+
+            比如我们添加的com.android.support:appcompat-v7:24.2.1依赖就在本地仓库中:
+             D:\StudioSdk\extras\android\m2repository\com\android\support\appcompat-v7
+
+ 本地依赖
+    1.文件依赖
+        我们可以通过Gradle提供的files法官法来添加爱JAR文件为一个依赖:
+           compile files('libs/xxx.jar')
+        当我们存在很多JAR文件时不用一个一个添加，可以一次添加一个文件夹
+           compile fileTree('libs')
+        默认情况下Android项目会有一个libs文件夹，他会被声明为依赖使用的文件夹，并且存在过滤器保证只有
+     JAR文件会被依赖，而不是依赖所有文件
+           compile fileTree(include: ['*.jar'], dir: 'libs')
+
+     2.源生依赖库
+         用C或者C++编写的依赖库可以被编译为特定平台的原生代码.这些依赖通常包含多个.so文件，Android插件默认
+       支持源生依赖库，你需要在模块层新建一个jniLibs文件夹，为每个平台创建子文件夹，将对应的.so文件放入其中
+         你也可以将其放入libs文件夹中 需要在构建文件中进行声明:
+             android{
+                sourceSets.main{
+                  jniLibs.srcDir 'src/main/libs'
+                }
+             }
+
+ 依赖项目
+       有时候我们需要分享一个使用了Android APIs或者Android资源的依赖库,那么你需要创建一个依赖项目，依赖项目通
+   常和应用项目类似，不同之处在于输出 应用项目将会生成一个APK文件，依赖项目则生成一个.aar文件，该文件可以被
+   Android应用项目作为依赖库
+       1.创建和使用依赖模块
+          我们知道新建的AndroidStudio项目里面有一个app目录 他就属于一个应用项目，在它的model下面的构建文件中
+       我们需要声明Android应用插件:
+                apply plugin: 'com.android.application'
+          但是当我们使用依赖项目时则需要使用Android依赖库插件
+                apply plugin: 'com.android.library'
+          如果在项目中创建了一耳光模块作为依赖项目，那么就需要在settings.gradle中添加该模块，在应用模块中将
+        它作为依赖
+                include ':app',':library(依赖项目名称)'
+            提示:在AndroidStudio中我们可以直接File-->New Model--->Android library添加新的依赖模块并且在依赖
+                 模块的构建文件中自动生成了依赖项目的插件声明，在settings.gradle中也进行了自动添加
+
+           为了在应用模块中使用依赖库，需要在应用模块的构建文件中进行添加
+               dependencies {
+                   compile project(':mylibrary')
+               ｝
+
+           在构建依赖项目时  会在依赖项目的build目录的outputs/aar下面生成.aar文件
+       2.使用.aar文件
+             如果你创建了一个依赖库，并且想在不同的Android应用中对其进行使用，那么你可以生成一个.aar文件，然后
+          将其作为一个依赖添加到你的项目中，你需要在应用模块新建一个文件夹，复制.aar文件至该文件夹，并添加该文
+          件夹作为依赖仓库:
+                respositories{
+                    flatDir{
+                       dirs 'aars'
+                    }
+                我们可以添加任何我呢见到该目录下，并将其作为依赖
+                   dependencies {
+                        compile(name:'libraryname',ext:'aar')
+                   ｝
+                   告知Gradle查找具有特定名称且扩展名为.aar的依赖库
+             注意:这种生成aar文件的方式可能存在问题
+
+ 依赖概念
+       1.配置
+           有时候你需要使用在特定设备上工作的SDK，比如特定厂商的蓝牙SDK，为了能够编译代码，你需要将SDK添加至
+        编译类路径.你并不需要添加SDK到你的APK中，因为其早已存在于设备中.这就是所谓的依赖配置.
+        2.语义化版本
+           版本化是依赖管理的重要部分，将依赖添加至JCenter等仓库中时，约定了一个版本化规则，称之为语义化版本
+        在语义化版本中，版本数字的格式一般为major.minor.patch （eg:23.0.3）
+               当做不兼容的API变化时,major(主要)版本增加
+               当以向后兼容的方式添加功能时,minor(极小的)版本增加
+               当修复一些bug时,patch(补丁)版本增加
+ 动态版本
+       如果你需要每一构建应用时都能够获得最新的依赖，要想做到这一点，可以通过动态版本的方式去做
+          compile 'com.alibaba:fastjson:1.2.+' //获取最新的path版本
+          compile 'com.alibaba:fastjson:1.2+'//获取最新的minr版本，并且版本最少是2
+          compile 'com.alibaba:fastjson:+'//获取依赖库的最新版本
+
+       警告:谨慎使用动态版本，动态版本会导致在构建时和运行时运行着不同的版本有可能导致应用的行为不一致
+
+   AndroidStudio关于依赖的配置，File---> Project Structure----->Dependencies使用右边的'+'号可以在J
+center仓库中对依赖进行搜索并且直接可以进行添加  并且在Dependencies中同样可以进行依赖项目
+
+
+

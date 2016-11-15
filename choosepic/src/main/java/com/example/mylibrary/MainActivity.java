@@ -1,8 +1,9 @@
-package com.example.administrator.testgradle;
+package com.example.mylibrary;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.choosepic.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -10,6 +11,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
     }
 }

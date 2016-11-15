@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':choosepic',":mylibrary"
 /**
  * settings文件在初始化阶段被执行，并且定义了哪些模块应该包含在构建内。
  *   单模块项目并不一定需要此文件 但是多模块项目必须要有settings文件 ，否则gradle不知道那个模块包含在构建内
