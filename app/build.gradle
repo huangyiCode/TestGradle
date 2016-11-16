@@ -61,6 +61,9 @@ android {
              * 代码优化，混淆相关
              */
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            /**
+             * buildConfig会在app/build/source/buildConfig/debug/BuldConfig中生成为属性
+             */
             buildConfigField "String", "API_URL", "\"http://192.16.199:8080/test\""
             buildConfigField "boolean", "LOG", "false"
             buildConfigField "boolean", "FLAG", "false"
@@ -118,6 +121,9 @@ dependencies {
     testCompile rootProject.pcakageTestCompile
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     //此处是每一个构建自己的依赖 其中twoBuildTypr是一个自定义构建类型在buildTypes中可以找到
-    twoBuildTyprCompile 'com.alibaba:fastjson:1.2.7'
+    // 只有使用相应的构建方式进行构建时才会添加此依赖 eg:此依赖 只有当我使用debug构建打包或者运行时才能添
+    // 加此依赖 否则如果在代码里面使用了依赖中的类时 会提示无法找到  不常用
+
+    debugCompile 'com.alibaba:fastjson:1.2.7'
 //    compile(name: 'test1', ext: 'aar')
 }

@@ -1,3 +1,5 @@
+create by huangYi 2015/11/16
+
 创建构建Variant
       开发一个应用的时候通常会有多个版本，比如测试版和手动版，免费版以及具有额外功能的付费版，以及服务器地址
   不相同的版本这种情况下就需要处理多种版本，不同版本的不同配置使项目变得复杂.
@@ -13,8 +15,8 @@
 
    1.构建类型
       在Gradle的Android插件中，构建类型是用来定义如何构建一个应用或者依赖库，并且每个构建类型都是相互独立的，每一个
-   构建类型都是不同的，不管debug标示是否被包含，applicationID是什么，无用的资源是否需要被移除.我们在buildTypes代码块
-   中定义构建类型.
+    构建类型都是不同的，不管debug标示是否被包含，applicationID是什么，无用的资源是否需要被移除.我们在buildTypes代码块
+    中定义构建类型.
        一个标准的buildTypes代码块:
               android{
                  buildTypes{
@@ -64,5 +66,69 @@
            dependencies{
                twoBuildTyprCompile 'com.alibaba:fastjson:1.2.7'
            }
+           注意:这种方式给构建方式添加特定的依赖，回到只在其他的构建方式构建中会无法使用此依赖
+                比如:当前这种特定依赖的方式，fastjson只能在twoBuildTypr构建方式下才能使用此依赖
+                      打包也是一样
+            测试:可以在左边工具窗口(Build Variants)中修改默认的build类型 查看BuildConfig来查看各个
+                 构建类型的不同输出
 
+    2.product flavor(不同定制产品)
+          product flavor只是用来被创建不同版本，比如:你的应用存在免费版以及付费版，或者为客户端构建相同功能但是品牌不同的应用，
+      多渠道打包，比如:你需要爱不同的平台上发布你的应用用来做不同的活动，product flavor简化了基于相同代码构建多个版本的应用进程
 
+       A:创建product flavor 可以用于多渠道打包  (在项目 choosepic中进行测试)
+            创建product flavor和构建方式类似.在android代码块下添加productFlavor代码块在其中添加新的product flavor来创建
+               android{
+                //添加不同的定制产品
+                 productFlavor{
+                   free{//免费版
+                       applicationId 'xxxxxxxx.free'
+                        versionCode 3
+                    }
+                    charge{//付费版
+                        applicationId 'xxxxxxxx.charge'
+                        minSdkVersion 14
+                        versionCode 6
+                      }
+                 }
+               }
+             这种方式我们的项目就存在多种不同的产品 多渠道打包也是使用同样的方式(多渠道打包主要还是看各个平台的要求 在此不作讲解)
+       B:多种定制的版本
+             某些情况下，我们需要创建product flavor的结合体，比如:客户A和客户B都想要免费版和付费版，并且时基于相同的代码不同的品牌，
+         这就意味着我们需要创建四种不同的flaovr意味着需要与多个拷贝，我们有更好的办法去做这件事,使用flavor维度时结合flavor:
+            android{
+              productFlavors{
+                  //定义了维度(Dimensions)数组
+                  flavorDimensions "color","price"
+                  red{
+                     flavorDimension "color"
+                  }
+                  blue{
+                     flavorDimension "color"
+                  }
+                  free{
+                     flavorDimension "price"
+                  }
+                  charge{
+                     flavorDimension "price"
+                  }
+              }
+            }
+            注意:当我们添加了维度数组之后，需要给每个flavor都要添加爱维度，否则会构建错误
+
+               当我们使用维度的方式最终就会生成多种构建Variant：(只有默认的梁红构建方式(debug,release))
+                    blueFreeDebug 和 blueFreeRelease
+                    blueChargeDebug 和 blueChargeRelease
+                    redFreeDebug 和 redFreeRelease
+                    redChargeDebug 和 redChargeRelease
+               提示:具体查看 本工程中的项目依赖
+       C:查看Build Variants
+             在AndroidStudio的Build Variants  窗口中进行查看Variants   如果不存在productFlavors则只会看到构建类型
+          如果找不到Build Variants View--->Tool Windows ---->Build Variants  并且在其中可以切换构建variants，此切换
+          会影响项目的Build方式 以及运行呈现所使用的构建方式
+
+        运行本项目中的testvariant Model 使用不同的构建方式 你可以看到产生的差异
+
+       D:variant过滤器
+          我们可以灾构建过程中完全忽略某一个variant,并且与其相关的任务也会进行取消 ，在此不做讲解
+    3.签名配置

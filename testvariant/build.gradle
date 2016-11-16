@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+
+    /**
+     * 创建不同的版本
+     */
+     productFlavors{
+            //定义了维度(Dimensions)数组
+         flavorDimensions "color","price"
+            red{
+                flavorDimension "color"
+                applicationIdSuffix ".red"
+                resValue "color","flavor_color","#ff0000"
+            }
+            blue{
+                flavorDimension "color"
+                applicationIdSuffix ".blue"
+                resValue "color","flavor_color","#0000ff"
+            }
+            free{
+                flavorDimension "price"
+            }
+            charge{
+                flavorDimension "price"
+            }
+         //可以再左侧的BuildVariant窗口中 查看
+     }
+
+
+    defaultConfig {
+        applicationId "com.example.testvariant"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String","MESSAGE", "\"----------release_BUILD_TYPE----------\""
+        }
+        debug{
+            buildConfigField "String","MESSAGE", "\"----------debug_BUILD_TYPE----------\""
+        }
+        //需要初始化构建类型
+        oneBuildType.initWith(buildTypes.debug)
+        oneBuildType{
+           buildConfigField "String","MESSAGE","\"----------ONE_BUILD_TYPE----------\" "
+        }
+        //需要初始化构建类型
+        twoBuildType.initWith(buildTypes.debug)
+        twoBuildType{
+            buildConfigField "String","MESSAGE", "\"----------TWO_BUILD_TYPE----------\""
+        }
+
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+}

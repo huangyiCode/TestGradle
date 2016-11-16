@@ -1,22 +1,22 @@
-package com.example.administrator.testgradle;
+package com.example.testvariant;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.alibaba.fastjson.JSON;
-
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         /**
-         * 第二构建类型  拥有特殊的依赖fastJson
+         * 在清单中使用了flavor中的色值
          */
-        if(BuildConfig.FLAG){
-            JSON.parse("{\"a\":1,\"b\":2}");
-        }
+        setContentView(R.layout.activity_main);
+        TextView mTvMain= (TextView) findViewById(R.id.tv_main);
+        /**
+         * 使用构建类型中的字符串
+         */
+        mTvMain.setText(BuildConfig.MESSAGE);
     }
 }

@@ -4,6 +4,25 @@ android {
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
 
+    /**
+     * 添加不同定制的产品
+     *   注意:productFlavors和defaultConfig都属于当前构建脚本中的对象 所以他们的属性时共享的
+     *        也就是说 productFlavors中的属性会将defaultConfig中的属性进行覆盖
+     */
+    productFlavors{
+        free{
+            applicationId "com.example.choosepic.free"
+            versionCode 4
+            versionName "4.0免费版"
+        }
+        charge{
+            applicationId "com.example.choosepic.charge"
+            minSdkVersion 14
+            versionCode 7
+            versionName "6.1付费版"
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.choosepic"
         minSdkVersion 15
