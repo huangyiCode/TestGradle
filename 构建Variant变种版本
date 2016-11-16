@@ -1,0 +1,68 @@
+创建构建Variant
+      开发一个应用的时候通常会有多个版本，比如测试版和手动版，免费版以及具有额外功能的付费版，以及服务器地址
+  不相同的版本这种情况下就需要处理多种版本，不同版本的不同配置使项目变得复杂.
+      在Gradle中有一些便捷以及可以扩展的概念来定位这些常见的问题，我们每新建一个新的项目，都会生成debug和release
+  构建类型.另外一个概念就是product flavor(不同定制的产品),它让管理多个应用和以案例库版本成为可能.product flavor和
+  构建类型经常结合在一起使用就很容易的处理测试和生产应用的免费和付费版本，构建类型和product flavor的结合称为构建
+  variant
+
+     构建类型
+     product flavor
+     构建variant
+     签名配置
+
+   1.构建类型
+      在Gradle的Android插件中，构建类型是用来定义如何构建一个应用或者依赖库，并且每个构建类型都是相互独立的，每一个
+   构建类型都是不同的，不管debug标示是否被包含，applicationID是什么，无用的资源是否需要被移除.我们在buildTypes代码块
+   中定义构建类型.
+       一个标准的buildTypes代码块:
+              android{
+                 buildTypes{
+                     release{
+                          minifyEnabled false
+                          proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                     }
+                 }
+              }
+         新模块的默认build.gradle文件配置了一个叫做 release(发布)的构建类型，用于禁用清除无用资源，
+     定义默认的Proguard(混淆器)
+
+         默认的debug构建类型可以让调试更加容易 当创建自己的构建模式的时候 可以自定义
+
+      A.创建构建类型
+         当默认的社会不够用的时候。我们可以创建新的自定义构建类型，只需要在buildTypes中新增加一个对象即可，比如:
+             buildTypes{
+                   /**
+                    * 自定义构建类型
+                    */
+                     oneBuildTypr{
+                         //再次对applicationId进行了拼接,也就是说不同的构建类型，他们的唯一标识不同，
+                         //唯一标识不同意味着他们可以再同业个设备上安装多种构建类型的应用
+                          applicationIdSuffix ".oneType"   //修改了applicationId
+                          versionNameSuffix   "-oneType"   //修改了版本名称
+                          //其他
+                          resValue "string", "app_namea", "第一测试版本"
+                      }
+             }
+
+          在创建一个新的构建类型时还可义通过另一个构建类型的属性对其机芯初始化
+                     buildTypes{
+                         oneBuildTypr.initWith(buildTypes.debug)
+                         oneBuildTypr{
+
+                         }
+                     }
+             initWith方法创建了一个新的构建类型，并复制了一个已经存在的构建类型所有属性到新的构建类型中，在新的
+         构建类型中可以对他们进行覆盖或者扩展
+
+             定义不同的构建方式 不同的构建方式所打的包更具所定义的差异差生的包是不同的,并且由于applicationID不同
+          不同的包是可以运行在同一设备的
+      B.源集
+      C:依赖
+          每种构建类型都可以有自己的依赖，Gradle自动为每个构建类型创建新的依赖配置，如果只想在Debug构建中添加一个logging
+        框架，那么可以这么做:
+           dependencies{
+               twoBuildTyprCompile 'com.alibaba:fastjson:1.2.7'
+           }
+
+

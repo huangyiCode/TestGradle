@@ -61,15 +61,37 @@ android {
              * 代码优化，混淆相关
              */
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String","API_URL","\"http://192.16.199:8080/test\""
-            buildConfigField "boolean","LOG","false"
-            resValue "string","app_namea","release"
+            buildConfigField "String", "API_URL", "\"http://192.16.199:8080/test\""
+            buildConfigField "boolean", "LOG", "false"
+            buildConfigField "boolean", "FLAG", "false"
+            resValue "string", "app_namea", "release"
+            debuggable false
+        }
+        debug {
+            buildConfigField "String", "API_URL", "\"http://192.16.199:8080/debug\""
+            buildConfigField "boolean", "LOG", "true"
+            buildConfigField "boolean", "FLAG", "false"
+            resValue "string", "app_namea", rootProject.ext.appName
+        }
+        /**
+         * 自定义构建类型
+         */
+        oneBuildTypr{
+            applicationIdSuffix ".oneType"   //修改了applicationId
+            versionNameSuffix   "-oneType"   //修改了版本名称
+            //其他
+            resValue "string", "app_namea", "第一测试版本"
+            buildConfigField "boolean", "FLAG", "true"
         }
 
-        debug{
-            buildConfigField "String","API_URL","\"http://192.16.199:8080/debug\""
-            buildConfigField "boolean","LOG","true"
-            resValue "string","app_namea",rootProject.ext.appName
+        /**
+         * 自定义构建类型
+         */
+        twoBuildTypr{
+            applicationIdSuffix ".twoType"  //修改了applicationId
+            versionNameSuffix   "-twoType"   //修改了版本名称
+            //其他
+            resValue "string", "app_namea", "第二测试版本"
         }
     }
     repositories{
@@ -95,7 +117,7 @@ dependencies {
     compile rootProject.ext.packageV7
     testCompile rootProject.pcakageTestCompile
     compile 'com.squareup.okhttp:okhttp:2.0.0'
-    compile 'com.alibaba:fastjson:1.2.7'
-    compile(name: 'test1', ext: 'aar')
-
+    //此处是每一个构建自己的依赖 其中twoBuildTypr是一个自定义构建类型在buildTypes中可以找到
+    twoBuildTyprCompile 'com.alibaba:fastjson:1.2.7'
+//    compile(name: 'test1', ext: 'aar')
 }
