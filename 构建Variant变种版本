@@ -131,4 +131,52 @@ create by huangYi 2015/11/16
 
        D:variant过滤器
           我们可以灾构建过程中完全忽略某一个variant,并且与其相关的任务也会进行取消 ，在此不做讲解
+
     3.签名配置
+
+          在我们发布和打包应用的时候都必须要对应用进行签名配置，Android插件使用了一个通用的keyStore和一个已知的密码(android)
+      自动创建了debug配置，在运行程序到手机的时候默认是将debug构建方式产生的安装包安装到了手机，但是当我们将构建方式切换到了
+      release构建方式运行时，会提示应用没有签名信息，无法运行，因为release方式没有默认的签名配置，所有当我们使用出国debug方式
+      的其他构建方式运行时，都是需要额外进行签名配置
+
+        提示:默认debug构建方式产生的apk是在 当前应用Model的build/outputs/apk/中
+
+        如何进行签名配置:
+         1.进行签名配置
+               android{
+                  signingConfigs{
+                     release{
+                          storeFile file("release.keystore(默认的目录为当前model的根目录)")
+                          storePassword"keystore文件的密码(生成keystore文件时指定)"
+                          keyAlias "应用的别名(生成keystore文件时指定 一个keystore中可以有多个签名信息)"
+                          keyPassword "此应用的私有密码((生成keystore文件时指定 每个签名别名对应的密码))"
+                     }
+                  }
+              }
+         2.给release构建方式或者其他构建方式配置签名
+             buildTypes{
+                 release{
+                 //引用签名配置中的release配置
+                  signingConfig signingConfigs.release
+                 }
+             }
+
+          此时你就可以以release方式去进行应用的打包
+
+          提示:Android Studio打包方式
+                1.点击Build------>Generate Signed APK
+                   在弹出的对话框中
+                   KeyStore path：keyStore(jks)文件的路径
+                        1.可以使用安卓默认的debug.keystore(windows-->C:\Users\Administrator\.android)
+                              keyStorePassword     keystore文件的密码默认为android
+                              key alias            key的别名  (寻找对应的key)-->也可以创建新的一个keystore
+                                                                                 中可以有多个key
+                              key password         key的密码  (配合别名的密码)
+                        2.选择现成的keyStore文件 需要知道上述信息
+                        3.自己生成新的keystore文件 createNew
+                            注意:certficate(证书)的信息必须要至少填一个
+                 2.下一步
+                          1.选择生成apk的位置
+                          2.生成apk的build type(构建方式(默认release和debug方式))
+                          3.Flavors(参考本全文) 生成多种定制产品(多渠道打包)
+

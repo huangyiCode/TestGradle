@@ -50,7 +50,7 @@ android {
         debug{
             buildConfigField "String","MESSAGE", "\"----------debug_BUILD_TYPE----------\""
         }
-        //需要初始化构建类型
+        //需要初始化构建类型默认使用debug构建方式的签名配置 否则此构建无法运行 或者需要自定义签名配置
         oneBuildType.initWith(buildTypes.debug)
         oneBuildType{
            buildConfigField "String","MESSAGE","\"----------ONE_BUILD_TYPE----------\" "
