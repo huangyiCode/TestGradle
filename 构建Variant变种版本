@@ -145,6 +145,11 @@ create by huangYi 2015/11/16
          1.进行签名配置
                android{
                   signingConfigs{
+                     /**
+                       * 自定义构建方式  initWith();会从另外一个签名配置中复制所有的签名属性
+                       *  此处自定义了一个签名配置--->从debug默认签名配置中进行了拷贝
+                       */
+                          mySign.initWith(signingConfigs.debug)
                      release{
                           storeFile file("release.keystore(默认的目录为当前model的根目录)")
                           storePassword"keystore文件的密码(生成keystore文件时指定)"
@@ -159,9 +164,43 @@ create by huangYi 2015/11/16
                  //引用签名配置中的release配置
                   signingConfig signingConfigs.release
                  }
+                 /**
+                  * 自定义的构建类型  如果需要使用此类型的构建方式进行打包则需要进行签名配置
+                  */
+                  myType{
+                  /**
+                   *     引用了自定义签名配置 signingConfig 否则使用此构建方式运行程序 会因为没有见面配置导致
+                   * 无法签名APK 导致无法打包运行
+                   */
+                      signingConfig signingConfigs.mySign
+                         }
+             }
+         3.同样当我们自定义了signingConfig(签名配置)我们可以将自定义的签名配置使用到构建类型以及flavor
+           中:
+              prodectFlavors{
+                 blue{
+                 /**
+                  *     注意:我们知道最终构建方式会和flavor进行组合 当我们构建方式中定义了签名配置并且在
+                  *flavors中同样也配置了签名配置(就像2和3同时使用) 那么flavors中的签名配置会覆盖构建类型
+                  *中的签名配置，但是这中方式并不能为每一个flavor添加不同的签名配置，这种情况下我们往下看
+                  */
+                   signingConfig signingConfigs.release
+                 }
+                 red{
+                   signingConfig signingConfigs.debug
+                 }
+              }
+         4.为每个falvo添加不同的签名配置  需要在构建类型中对每个flavor中添加不同的签名配置 比如:
+             android{
+                   buildTypes{
+                       release{
+                         prodectFlavors.red.signingConfig.signingConfigs.release
+                         prodectFlavors.red.signingConfig.signingConfigs.debug
+                       }
+                   }
              }
 
-          此时你就可以以release方式去进行应用的打包
+          此时你就可以以release构建类型以及myType构建类型去进行应用的打包
 
           提示:Android Studio打包方式
                 1.点击Build------>Generate Signed APK
@@ -179,4 +218,7 @@ create by huangYi 2015/11/16
                           1.选择生成apk的位置
                           2.生成apk的build type(构建方式(默认release和debug方式))
                           3.Flavors(参考本全文) 生成多种定制产品(多渠道打包)
+
+
+
 

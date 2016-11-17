@@ -17,6 +17,15 @@ android {
 
     //签名配置
     signingConfigs {
+        /**
+         * 自定义构建方式  initWith();会从另外一个签名配置中复制所有的签名属性
+         *  此处自定义了一个签名配置--->从debug默认签名配置中进行了拷贝
+         */
+        mySign.initWith(signingConfigs.debug)
+
+        /**
+         * 自定义的签名配置 命名尽量和构建方式名称相同
+         */
         release {
             storeFile file('myTest.jks')
             storePassword "123456"
@@ -32,6 +41,16 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        /**
+         * 自定义的构建类型  如果需要使用此类型的构建方式进行打包则需要进行签名配置
+         */
+        myType{
+            /**
+             *     引用了自定义签名配置 signingConfig 否则使用此构建方式运行程序 会因为没有见面配置导致
+             * 无法签名APK 导致无法打包运行
+             */
+            signingConfig signingConfigs.mySign
         }
     }
 }
