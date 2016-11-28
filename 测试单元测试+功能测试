@@ -1,0 +1,58 @@
+单元测试
+
+      单元测试表示对软件系统的最小单元进行测试，在面向对象的语言中 最小的单元是类
+
+      Android studio 默认支持JUnit，创建一个新的项目，项目中自动添加了JUnit的依赖testCompile 'junit:junit:4.12'，
+      所以可以直接在Android studio中使用JUnit来进行单元测试。
+
+
+      AndroidStudio中单元测试的步骤
+         1.找到需要进行单元测试的类
+                  eg:app/src/main/TestUtil   (我们需要对两个加法方法进行测试)
+
+         2.在此类中右键 goTo/Test/CreateNewTest   默认选则 junit4 单元测试依赖
+                单元测试中 注解方法的解释
+                                @BeforeClass -------在类加载之前执行  (注意:此方法为static)  比如可以做连接数据库操作
+                                @Before  --------在每个测试方法执行之前调用
+                                @Test    --------注解测试方法方法执行之后调用
+                                         eg:你可以为此注解添加参数 @Test(timeOut=3000)  如果方法执行超出此时间则会抛出异常  测试失败
+                                @After   --------在每个测试
+                                @AfterClass  -------在类加载之后执行  (注意:此方法为static)  比如可以进行一些资源的释放
+                                @Ignore:忽略的测试方法
+           执行顺序为：@BeforeClass --> @Before --> @Test --> @After --> @AfterClass    (一个@Test)
+         3.使用断言进行测试  断言某个方法执行的返回结果是否与预期结果相同  如果不同则断言方法就会抛出异常
+
+                  在方法addA()中添加断言  断言方法的返回结果
+                            Assert.assertEquals(1+2,mTestUtil.addA(1,2));
+                  在方法addB()中添加断言  断言方法的返回结果
+                                              Assert.assertEquals(1+2,mTestUtil.addB(1,2));
+         4.分析结果
+                   在当前的测试类中   右键--Run   运行此测试java文件
+
+                   产生结果:
+                          java.lang.AssertionError:
+                          Expected :3
+                          Actual   :0
+
+                          java.lang.StringIndexOutOfBoundsException: String index out of range: 1
+
+                    我们可以看到   在执行 addA()测试方法的时候   产生此错误  预期值与实际结果不同    这样就达到了单元测试的效果
+                                   在执行 sunString(测试方法时)  出现了问题  达到了测试的效果
+
+         5.常用的断言方法：
+
+           assertEquals(args)：根据传入的参数判断预期结果和实际结果是否相等。
+
+           assertTrue/False(args)： 判断一个条件为true/false。
+
+           assertNotNull/Null(args)： 判断一个对象是否为空。
+
+           assertSame/NotSame(args)： 判断两个对象是否指向同一个对象。
+
+           fail(args)： 中断测试方法，可以为其设置信息。
+
+                    使用类似于这种方式的单元测试 就可以检查代码所出现的问题
+
+
+
+

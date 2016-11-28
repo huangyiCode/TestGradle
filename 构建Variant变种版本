@@ -177,7 +177,7 @@ create by huangYi 2015/11/16
              }
          3.同样当我们自定义了signingConfig(签名配置)我们可以将自定义的签名配置使用到构建类型以及flavor
            中:
-              prodectFlavors{
+              productFlavors{
                  blue{
                  /**
                   *     注意:我们知道最终构建方式会和flavor进行组合 当我们构建方式中定义了签名配置并且在
