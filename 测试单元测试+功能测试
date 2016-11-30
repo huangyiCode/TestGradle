@@ -39,9 +39,7 @@
                     我们可以看到   在执行 addA()测试方法的时候   产生此错误  预期值与实际结果不同    这样就达到了单元测试的效果
                                    在执行 sunString(测试方法时)  出现了问题  达到了测试的效果
 
-         5.常用的断言方法：
-
-           assertEquals(args)：根据传入的参数判断预期结果和实际结果是否相等。
+            assertEquals(args)：根据传入的参数判断预期结果和实际结果是否相等。
 
            assertTrue/False(args)： 判断一个条件为true/false。
 
@@ -52,6 +50,15 @@
            fail(args)： 中断测试方法，可以为其设置信息。
 
                     使用类似于这种方式的单元测试 就可以检查代码所出现的问题
+
+      AndroidStudio中功能测试(AndroidTest)的测试步骤
+
+        eg:testAndroidTest
+       1.准备好需要测试的功能   比如登陆 ,文本输入等;
+       2.添加功能测试的依赖
+          模块构建文件中的dependencies 中的androidCompile 即为Android功能测试所添加的依赖
+
+
 
 
 
